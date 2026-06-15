@@ -1,0 +1,22 @@
+version: 0.2
+
+env:
+  parameter-store:
+    DOCKER_USER: "/docker-hub/username"
+    DOCKER_PASS: "/docker-hub/password"
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Docker Hub...
+      - echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...
+      - docker build -t "$DOCKER_USER/python-ci-demo:latest" .
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker image...
+      - docker push "$DOCKER_USER/python-ci-demo:latest"
